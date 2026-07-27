@@ -622,7 +622,81 @@ async function sendReservation(){
 
   }
 
+  // 名前チェック
 
+const name =
+  document.getElementById(
+    "name"
+  ).value.trim();
+
+
+if(!name){
+
+  alert(
+    "お名前を入力してください"
+  );
+
+  return;
+
+}
+
+
+
+// 電話番号チェック
+
+const phone =
+  document.getElementById(
+    "phone"
+  ).value.trim();
+
+
+if(!phone){
+
+  alert(
+    "電話番号を入力してください"
+  );
+
+  return;
+
+}
+
+
+
+if(
+  !/^[0-9\-]+$/.test(phone)
+){
+
+  alert(
+    "電話番号の形式を確認してください"
+  );
+
+  return;
+
+}
+
+
+
+// メールチェック（入力時のみ）
+
+const mail =
+  document.getElementById(
+    "mail"
+  ).value.trim();
+
+
+
+if(
+  mail &&
+  !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)
+){
+
+  alert(
+    "メールアドレスの形式を確認してください"
+  );
+
+  return;
+
+}
 
   const body = {
 
@@ -715,16 +789,43 @@ async function sendReservation(){
   if(data.success){
 
 
-    alert(
+localStorage.setItem(
 
-      "予約しました\n予約番号："+
+"reservationResult",
 
-      data.reservationNo
+JSON.stringify({
 
-    );
+reservationNo:
+
+data.reservationNo,
 
 
-    location.href="index.html";
+useDate:
+
+selectedDate,
+
+
+people:
+
+people,
+
+
+totalPrice:
+
+data.totalPrice
+
+})
+
+);
+
+
+
+location.href=
+
+"reservation-complete.html";
+
+
+}
 
 
   }

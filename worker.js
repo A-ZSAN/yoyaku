@@ -82,13 +82,10 @@ async fetch(request, env){
 
       case "/api/calendar":
 
-  return json({
-
-    test:true,
-
-    gas:env.GAS_URL
-
-  });
+        return gasGet(
+          env,
+          "getCalendar"
+        );
 
 
 
@@ -175,21 +172,23 @@ async function gasGet(
 ){
 
 
-  const res = await fetch(
+  const url =
+  env.GAS_URL +
+  "?action=" +
+  action;
 
-    env.GAS_URL +
 
-    "?action=" +
+console.log(url);
 
-    action
 
-  );
+const res = await fetch(url);
 
 
   const text =
 
     await res.text();
 
+console.log(text);
 
   return new Response(
 

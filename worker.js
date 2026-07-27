@@ -82,10 +82,15 @@ async fetch(request, env){
 
       case "/api/calendar":
 
-        return gasGet(
-          env,
-          "getCalendar"
-        );
+  return new Response(
+    "calendar ok",
+    {
+      status:200,
+      headers:{
+        "Content-Type":"text/plain"
+      }
+    }
+  );
 
 
 

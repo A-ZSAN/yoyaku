@@ -186,13 +186,34 @@ async function gasGet(
   );
 
 
-  const data =
+  const text =
 
-    await res.json();
+    await res.text();
 
 
+  return new Response(
 
-  return json(data);
+    text,
+
+    {
+
+      status:200,
+
+      headers:{
+
+        "Content-Type":
+
+          "application/json",
+
+        "Access-Control-Allow-Origin":
+
+          "*"
+
+      }
+
+    }
+
+  );
 
 
 }

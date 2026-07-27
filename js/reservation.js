@@ -6,6 +6,8 @@
 
 let unitPrice = 0;
 
+let people = 1;
+
 let selectedDate = null;
 
 
@@ -49,15 +51,45 @@ document.addEventListener(
 
     document
 
-      .getElementById("people")
+.getElementById(
+"minusPeople"
+)
 
-      .addEventListener(
+.onclick = ()=>{
 
-        "change",
 
-        updatePrice
+  if(people > 1){
 
-      );
+    people--;
+
+    updatePeople();
+
+  }
+
+
+};
+
+
+
+document
+
+.getElementById(
+"plusPeople"
+)
+
+.onclick = ()=>{
+
+
+  if(people < 10){
+
+    people++;
+
+    updatePeople();
+
+  }
+
+
+};
 
 
     document
@@ -437,7 +469,14 @@ function renderCalendar(){
           .value =
           dateText;
 
-
+        document
+          .getElementById(
+          "selectedDateText"
+        )
+        .textContent =
+        
+          "利用日：" +
+          dateText;
 
         document
 
@@ -479,7 +518,38 @@ function renderCalendar(){
 
 }
 
+//==================================================
+// 人数更新
+//==================================================
+function updatePeople(){
 
+
+  document
+
+  .getElementById(
+    "peopleDisplay"
+  )
+
+  .textContent =
+    people;
+
+
+
+  document
+
+  .getElementById(
+    "people"
+  )
+
+  .value =
+    people;
+
+
+
+  updatePrice();
+
+
+}
 
 //==================================================
 // 金額表示

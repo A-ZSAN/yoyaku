@@ -464,3 +464,143 @@ textarea{
 
 
 }
+
+/*================================
+  予約カレンダー
+================================*/
+
+
+.calendar-header{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  margin-bottom:15px;
+
+}
+
+
+.calendar-header button{
+
+  width:40px;
+
+  height:40px;
+
+  border-radius:8px;
+
+  border:1px solid #ccc;
+
+  background:#fff;
+
+  font-size:20px;
+
+}
+
+
+.calendar-header button:disabled{
+
+  opacity:0.3;
+
+}
+
+
+
+#calendar{
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(7,1fr);
+
+  gap:5px;
+
+}
+
+
+
+/* 曜日 */
+
+.calendar-week{
+
+  text-align:center;
+
+  font-weight:bold;
+
+  padding:8px 0;
+
+}
+
+
+
+/* 日付 */
+
+.calendar-day{
+
+  aspect-ratio:1 / 1;
+
+  border-radius:8px;
+
+  border:1px solid #ddd;
+
+  background:white;
+
+  cursor:pointer;
+
+  font-size:16px;
+
+}
+
+
+
+.calendar-day:hover{
+
+  background:#f0f8ff;
+
+}
+
+
+
+/* 選択 */
+
+.calendar-day.selected{
+
+  background:#4caf50;
+
+  color:white;
+
+  font-weight:bold;
+
+}
+
+
+
+/* 予約不可 */
+
+.calendar-day.disabled{
+
+  background:#eee;
+
+  color:#999;
+
+  cursor:not-allowed;
+
+}
+
+
+
+/* スマホ */
+
+@media(max-width:600px){
+
+
+  .calendar-day{
+
+    font-size:14px;
+
+  }
+
+
+}

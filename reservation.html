@@ -90,6 +90,11 @@ type="hidden"
 id="useDate"
 >
 
+<div id="selectedDateText">
+
+利用日を選択してください
+
+</div>
 
 </section>
 
@@ -159,53 +164,45 @@ id="mail"
 
 <label>
 
-人数
+大人人数
 
-<select
+<div class="people-control">
+
+
+<button
+type="button"
+id="minusPeople"
+>
+−
+</button>
+
+
+<span
+id="peopleDisplay"
+>
+1
+</span>
+
+名
+
+
+<button
+type="button"
+id="plusPeople"
+>
+＋
+</button>
+
+
+</div>
+
+
+<input
+type="hidden"
 id="people"
+value="1"
 >
 
-<option value="1">
-1名
-</option>
-
-<option value="2">
-2名
-</option>
-
-<option value="3">
-3名
-</option>
-
-<option value="4">
-4名
-</option>
-
-<option value="5">
-5名
-</option>
-
-<option value="6">
-6名
-</option>
-
-<option value="7">
-7名
-</option>
-
-<option value="8">
-8名
-</option>
-
-<option value="9">
-9名
-</option>
-
-<option value="10">
-10名
-</option>
-
-</select>
 
 </label>
 

@@ -606,145 +606,97 @@ function updatePrice(){
 // 予約送信
 //==================================================
 
+//==================================================
+// 予約送信
+//==================================================
+
 async function sendReservation(){
 
 
   if(!selectedDate){
 
-
     alert(
       "利用日を選択してください"
     );
 
-
     return;
-
 
   }
 
-  // 名前チェック
-
-const name =
-  document.getElementById(
-    "name"
-  ).value.trim();
 
 
-if(!name){
+  const name =
 
-  alert(
-    "お名前を入力してください"
-  );
-
-  return;
-
-}
+    document
+      .getElementById("name")
+      .value
+      .trim();
 
 
 
-// 電話番号チェック
+  if(!name){
 
-const phone =
-  document.getElementById(
-    "phone"
-  ).value.trim();
+    alert(
+      "お名前を入力してください"
+    );
 
+    return;
 
-if(!phone){
-
-  alert(
-    "電話番号を入力してください"
-  );
-
-  return;
-
-}
+  }
 
 
 
-if(
-  !/^[0-9\-]+$/.test(phone)
-){
+  const phone =
 
-  alert(
-    "電話番号の形式を確認してください"
-  );
-
-  return;
-
-}
+    document
+      .getElementById("phone")
+      .value
+      .trim();
 
 
 
-// メールチェック（入力時のみ）
+  if(!phone){
 
-const mail =
-  document.getElementById(
-    "mail"
-  ).value.trim();
+    alert(
+      "電話番号を入力してください"
+    );
+
+    return;
+
+  }
 
 
-
-if(
-  mail &&
-  !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)
-){
-
-  alert(
-    "メールアドレスの形式を確認してください"
-  );
-
-  return;
-
-}
 
   const body = {
 
-
-    useDate:selectedDate,
+    useDate:
+      selectedDate,
 
 
     company:
-
-      document.getElementById(
-        "company"
-      ).value,
+      document.getElementById("company").value,
 
 
     name:
-
-      document.getElementById(
-        "name"
-      ).value,
+      name,
 
 
     phone:
-
-      document.getElementById(
-        "phone"
-      ).value,
+      phone,
 
 
     mail:
-
-      document.getElementById(
-        "mail"
-      ).value,
+      document.getElementById("mail").value,
 
 
     people:
-
-      document.getElementById(
-        "people"
-      ).value,
+      Number(
+        document.getElementById("people").value
+      ),
 
 
     memo:
-
-      document.getElementById(
-        "memo"
-      ).value
-
+      document.getElementById("memo").value
 
   };
 
@@ -755,7 +707,6 @@ if(
     await fetch(
 
       API_URL +
-
       "/api/reservation",
 
       {
@@ -765,10 +716,10 @@ if(
         headers:{
 
           "Content-Type":
-
           "application/json"
 
         },
+
 
         body:
 
@@ -782,51 +733,58 @@ if(
 
   const data =
 
-  await res.json();
+    await res.json();
 
 
 
-if(data.success){
+  if(data.success){
 
 
-  localStorage.setItem(
+    localStorage.setItem(
 
-    "reservationResult",
+      "reservationResult",
 
-    JSON.stringify({
+      JSON.stringify({
 
-      reservationNo:
-        data.reservationNo,
-
-      useDate:
-        selectedDate,
-
-      people:
-        Number(
-          document.getElementById("people").value
-        ),
-
-      totalPrice:
-        data.totalPrice
-
-    })
-
-  );
+        reservationNo:
+          data.reservationNo,
 
 
-  location.href =
-    "reservation-complete.html";
+        useDate:
+          selectedDate,
 
 
-}
-else{
+        people:
+          body.people,
 
 
-  alert(
+        totalPrice:
+          data.totalPrice
 
-    data.message
+      })
 
-  );
+    );
+
+
+
+    location.href =
+
+      "reservation-complete.html";
+
+
+  }
+
+  else{
+
+
+    alert(
+
+      data.message
+
+    );
+
+
+  }
 
 
 }

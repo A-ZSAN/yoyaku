@@ -803,8 +803,6 @@ if(
   location.href =
     "reservation-complete.html";
 
-
-}
 else{
 
 

@@ -782,32 +782,50 @@ if(
 
   const data =
 
-    await res.json();
+  await res.json();
 
 
 
-  if(data.success){
+if(data.success){
 
 
   localStorage.setItem(
+
     "reservationResult",
+
     JSON.stringify({
-      reservationNo:data.reservationNo,
-      useDate:selectedDate,
-      people:people,
-      totalPrice:data.totalPrice
+
+      reservationNo:
+        data.reservationNo,
+
+      useDate:
+        selectedDate,
+
+      people:
+        Number(
+          document.getElementById("people").value
+        ),
+
+      totalPrice:
+        data.totalPrice
+
     })
+
   );
 
 
   location.href =
     "reservation-complete.html";
 
+
+}
 else{
 
 
   alert(
+
     data.message
+
   );
 
 

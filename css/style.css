@@ -604,3 +604,40 @@ textarea{
 
 
 }
+
+/* 予約カレンダー 日付表示 */
+.calendar-day{
+
+  color:#333;
+
+  background:#fff;
+
+  border:1px solid #ccc;
+
+}
+
+
+.calendar-day:hover{
+
+  background:#f0f0f0;
+
+}
+
+
+.calendar-day.selected{
+
+  background:#4caf50;
+
+  color:#fff;
+
+}
+
+
+/* 予約不可 */
+.calendar-day.disabled{
+
+  color:#aaa;
+
+  background:#eee;
+
+}

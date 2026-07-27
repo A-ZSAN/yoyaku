@@ -789,56 +789,28 @@ if(
   if(data.success){
 
 
-localStorage.setItem(
-
-"reservationResult",
-
-JSON.stringify({
-
-reservationNo:
-
-data.reservationNo,
-
-
-useDate:
-
-selectedDate,
+  localStorage.setItem(
+    "reservationResult",
+    JSON.stringify({
+      reservationNo:data.reservationNo,
+      useDate:selectedDate,
+      people:people,
+      totalPrice:data.totalPrice
+    })
+  );
 
 
-people:
-
-people,
-
-
-totalPrice:
-
-data.totalPrice
-
-})
-
-);
-
-
-
-location.href=
-
-"reservation-complete.html";
+  location.href =
+    "reservation-complete.html";
 
 
 }
+else{
 
 
-  }
-
-  else{
-
-
-    alert(
-      data.message
-    );
-
-
-  }
+  alert(
+    data.message
+  );
 
 
 }

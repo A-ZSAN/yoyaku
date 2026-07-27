@@ -4,14 +4,30 @@
 //==================================================
 
 
-// 現在料金
-
 let unitPrice = 0;
 
-
-// 選択日
-
 let selectedDate = null;
+
+
+// カレンダー用
+let calendarData = [];
+
+let currentMonth = new Date();
+
+
+// 表示範囲
+let minMonth = new Date();
+
+minMonth.setDate(1);
+
+
+let maxMonth = new Date();
+
+maxMonth.setMonth(
+  maxMonth.getMonth() + 2
+);
+
+maxMonth.setDate(1);
 
 
 
@@ -63,7 +79,6 @@ document.addEventListener(
 
 
 
-
 //==================================================
 // 料金取得
 //==================================================
@@ -71,17 +86,13 @@ document.addEventListener(
 async function loadPrices(){
 
 
-  const res = await fetch(
-
-    API_URL +
-
-    "/api/prices"
-
-  );
+  const res =
+    await fetch(
+      API_URL + "/api/prices"
+    );
 
 
   const data =
-
     await res.json();
 
 
@@ -90,16 +101,12 @@ async function loadPrices(){
 
 
     unitPrice =
-
       Number(
-
         data[0].price
-
       );
 
 
   }
-
 
 }
 
@@ -112,25 +119,60 @@ async function loadPrices(){
 async function loadCalendar(){
 
 
-  const res = await fetch(
-
-    API_URL +
-
-    "/api/calendar"
-
-  );
+  const res =
+    await fetch(
+      API_URL + "/api/calendar"
+    );
 
 
-  const data =
-
+  calendarData =
     await res.json();
 
 
-  createCalendar(
 
-    data
+  renderCalendar();
 
-  );
+
+
+  document
+
+    .getElementById("prevMonth")
+
+    .onclick = ()=>{
+
+
+      currentMonth.setMonth(
+
+        currentMonth.getMonth() - 1
+
+      );
+
+
+      renderCalendar();
+
+
+    };
+
+
+
+  document
+
+    .getElementById("nextMonth")
+
+    .onclick = ()=>{
+
+
+      currentMonth.setMonth(
+
+        currentMonth.getMonth() + 1
+
+      );
+
+
+      renderCalendar();
+
+
+    };
 
 
 }
@@ -138,18 +180,15 @@ async function loadCalendar(){
 
 
 //==================================================
-// カレンダー作成
+// カレンダー表示
 //==================================================
 
-function createCalendar(data){
+function renderCalendar(){
 
 
   const area =
-
     document.getElementById(
-
       "calendar"
-
     );
 
 
@@ -157,36 +196,215 @@ function createCalendar(data){
 
 
 
-  data.forEach(day=>{
+  const title =
+    document.getElementById(
+      "calendarTitle"
+    );
 
 
-    const button =
+
+  title.textContent =
+
+    currentMonth.getFullYear()
+
+    + "年"
+
+    +
+
+    (
+
+      currentMonth.getMonth()+1
+
+    )
+
+    + "月";
+
+
+
+  // ボタン制御
+
+  document
+
+    .getElementById(
+      "prevMonth"
+    )
+
+    .disabled =
+
+      currentMonth <= minMonth;
+
+
+
+  document
+
+    .getElementById(
+      "nextMonth"
+    )
+
+    .disabled =
+
+      currentMonth >= maxMonth;
+
+
+
+
+  const week =
+
+    [
+      "日",
+      "月",
+      "火",
+      "水",
+      "木",
+      "金",
+      "土"
+    ];
+
+
+
+  week.forEach(day=>{
+
+
+    const div =
+      document.createElement(
+        "div"
+      );
+
+
+    div.textContent =
+      day;
+
+
+    div.className =
+      "calendar-week";
+
+
+    area.appendChild(
+      div
+    );
+
+
+  });
+
+
+
+  const firstDay =
+
+    new Date(
+
+      currentMonth.getFullYear(),
+
+      currentMonth.getMonth(),
+
+      1
+
+    ).getDay();
+
+
+
+  const lastDate =
+
+    new Date(
+
+      currentMonth.getFullYear(),
+
+      currentMonth.getMonth()+1,
+
+      0
+
+    ).getDate();
+
+
+
+
+  // 空白
+
+  for(
+    let i=0;
+    i<firstDay;
+    i++
+  ){
+
+    area.appendChild(
 
       document.createElement(
+        "div"
+      )
 
-        "button"
+    );
+
+  }
+
+
+
+
+  // 日付
+
+  for(
+    let d=1;
+    d<=lastDate;
+    d++
+  ){
+
+
+    const dateText =
+
+      currentMonth.getFullYear()
+
+      +
+
+      "-"
+
+      +
+
+      String(
+        currentMonth.getMonth()+1
+      )
+      .padStart(2,"0")
+
+      +
+
+      "-"
+
+      +
+
+      String(d)
+      .padStart(2,"0");
+
+
+
+    const day =
+
+      calendarData.find(
+
+        x =>
+          x.date === dateText
 
       );
 
 
 
+    const button =
+
+      document.createElement(
+        "button"
+      );
+
+
+
     button.textContent =
+      d;
 
-      day.available
 
-      ?
 
-      day.date.slice(8)+"日"
-
-      :
-
-      "×";
+    button.type =
+      "button";
 
 
 
     button.className =
 
-      day.available
+      day && day.available
 
       ?
 
@@ -198,55 +416,49 @@ function createCalendar(data){
 
 
 
-    if(day.available){
+
+    if(day && day.available){
 
 
       button.onclick = ()=>{
 
 
         selectedDate =
+          dateText;
 
-          day.date;
 
 
         document
 
           .getElementById(
-
             "useDate"
-
           )
 
           .value =
-
-          day.date;
+          dateText;
 
 
 
         document
 
           .querySelectorAll(
-
             ".calendar-day"
-
           )
 
           .forEach(btn=>{
 
+
             btn.classList.remove(
-
               "selected"
-
             );
+
 
           });
 
 
 
         button.classList.add(
-
           "selected"
-
         );
 
 
@@ -256,14 +468,13 @@ function createCalendar(data){
     }
 
 
+
     area.appendChild(
-
       button
-
     );
 
 
-  });
+  }
 
 
 }
@@ -284,9 +495,7 @@ function updatePrice(){
       document
 
       .getElementById(
-
         "people"
-
       )
 
       .value
@@ -306,9 +515,7 @@ function updatePrice(){
   document
 
     .getElementById(
-
       "totalPrice"
-
     )
 
     .textContent =
@@ -336,9 +543,7 @@ async function sendReservation(){
 
 
     alert(
-
       "利用日を選択してください"
-
     );
 
 
@@ -348,65 +553,52 @@ async function sendReservation(){
   }
 
 
+
   const body = {
 
 
-    useDate:
-
-      selectedDate,
+    useDate:selectedDate,
 
 
     company:
 
       document.getElementById(
-
         "company"
-
       ).value,
 
 
     name:
 
       document.getElementById(
-
         "name"
-
       ).value,
 
 
     phone:
 
       document.getElementById(
-
         "phone"
-
       ).value,
 
 
     mail:
 
       document.getElementById(
-
         "mail"
-
       ).value,
 
 
     people:
 
       document.getElementById(
-
         "people"
-
       ).value,
 
 
     memo:
 
       document.getElementById(
-
         "memo"
-
       ).value
 
 
@@ -414,34 +606,33 @@ async function sendReservation(){
 
 
 
-  const res = await fetch(
+  const res =
 
-    API_URL +
+    await fetch(
 
-    "/api/reservation",
+      API_URL +
 
-    {
+      "/api/reservation",
 
-      method:"POST",
+      {
 
+        method:"POST",
 
-      headers:{
+        headers:{
 
-        "Content-Type":
+          "Content-Type":
 
-        "application/json"
+          "application/json"
 
-      },
+        },
 
+        body:
 
-      body:
+          JSON.stringify(body)
 
-        JSON.stringify(body)
+      }
 
-
-    }
-
-  );
+    );
 
 
 
@@ -472,9 +663,7 @@ async function sendReservation(){
 
 
     alert(
-
       data.message
-
     );
 
 

@@ -1,0 +1,270 @@
+/*==================================================
+  温泉予約システム
+  Style Ver.0.1
+==================================================*/
+
+
+/*------------------------------
+  基本
+------------------------------*/
+
+*{
+
+  box-sizing:border-box;
+
+}
+
+
+body{
+
+  margin:0;
+
+  font-family:
+
+    "Noto Sans JP",
+    sans-serif;
+
+  color:#333;
+
+  background:#f7f7f7;
+
+}
+
+
+
+header{
+
+  background:#4a7c59;
+
+  color:white;
+
+  padding:20px;
+
+}
+
+
+
+.header-inner{
+
+  max-width:900px;
+
+  margin:auto;
+
+}
+
+
+
+h1{
+
+  margin:0;
+
+  font-size:28px;
+
+}
+
+
+
+main{
+
+  max-width:900px;
+
+  margin:auto;
+
+  padding:20px;
+
+}
+
+
+
+section{
+
+  background:white;
+
+  border-radius:12px;
+
+  padding:20px;
+
+  margin-bottom:20px;
+
+  box-shadow:
+
+    0 2px 8px rgba(0,0,0,.08);
+
+}
+
+
+
+h2{
+
+  margin-top:0;
+
+  border-left:5px solid #4a7c59;
+
+  padding-left:10px;
+
+}
+
+
+
+/*------------------------------
+  メイン画像
+------------------------------*/
+
+
+.hero{
+
+  padding:0;
+
+  overflow:hidden;
+
+}
+
+
+
+.hero img{
+
+  width:100%;
+
+  display:block;
+
+  max-height:400px;
+
+  object-fit:cover;
+
+}
+
+
+
+/*------------------------------
+  お知らせ
+------------------------------*/
+
+
+.news-item{
+
+  padding:12px 0;
+
+  border-bottom:
+
+    1px solid #ddd;
+
+}
+
+
+.news-item:last-child{
+
+  border-bottom:none;
+
+}
+
+
+
+/*------------------------------
+  料金
+------------------------------*/
+
+
+.price-item{
+
+  padding:15px;
+
+  background:#f5f5f5;
+
+  border-radius:8px;
+
+  margin-bottom:10px;
+
+  font-size:18px;
+
+}
+
+
+
+/*------------------------------
+  予約ボタン
+------------------------------*/
+
+
+.reserve-area{
+
+  text-align:center;
+
+}
+
+
+
+.reserve-btn{
+
+  display:inline-block;
+
+  padding:15px 50px;
+
+  background:#4a7c59;
+
+  color:white;
+
+  text-decoration:none;
+
+  border-radius:30px;
+
+  font-size:20px;
+
+}
+
+
+
+.reserve-btn:hover{
+
+  opacity:.8;
+
+}
+
+
+
+/*------------------------------
+  Footer
+------------------------------*/
+
+
+footer{
+
+  text-align:center;
+
+  padding:20px;
+
+  color:#777;
+
+}
+
+
+
+/*------------------------------
+  スマホ
+------------------------------*/
+
+
+@media(max-width:600px){
+
+
+  h1{
+
+    font-size:22px;
+
+  }
+
+
+  main{
+
+    padding:10px;
+
+  }
+
+
+  section{
+
+    padding:15px;
+
+  }
+
+
+}

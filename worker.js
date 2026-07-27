@@ -164,56 +164,37 @@ async fetch(request, env){
 
 
 async function gasGet(
-
   env,
-
   action
-
 ){
 
+  try{
 
-  const url =
-  env.GAS_URL +
-  "?action=" +
-  action;
-
-
-console.log(url);
+    const url =
+      env.GAS_URL +
+      "?action=" +
+      action;
 
 
-const res = await fetch(url);
+    return json({
+
+      step:"before fetch",
+
+      url:url
+
+    });
 
 
-  const text =
+  }
+  catch(e){
 
-    await res.text();
+    return json({
 
-console.log(text);
+      error:String(e)
 
-  return new Response(
+    },500);
 
-    text,
-
-    {
-
-      status:200,
-
-      headers:{
-
-        "Content-Type":
-
-          "application/json",
-
-        "Access-Control-Allow-Origin":
-
-          "*"
-
-      }
-
-    }
-
-  );
-
+  }
 
 }
 

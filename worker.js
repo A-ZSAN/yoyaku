@@ -82,13 +82,13 @@ async fetch(request, env){
 
       case "/api/calendar":
 
-        return gasGet(
+  return json({
 
-          env,
+    test:true,
 
-          "getCalendar"
+    gas:env.GAS_URL
 
-        );
+  });
 
 
 

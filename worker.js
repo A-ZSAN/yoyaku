@@ -82,15 +82,13 @@ async fetch(request, env){
 
       case "/api/calendar":
 
-  return new Response(
-    "calendar ok",
-    {
-      status:200,
-      headers:{
-        "Content-Type":"text/plain"
-      }
-    }
-  );
+        return gasGet(
+
+          env,
+
+          "getCalendar"
+
+        );
 
 
 
@@ -169,37 +167,53 @@ async fetch(request, env){
 
 
 async function gasGet(
+
   env,
+
   action
+
 ){
 
-  try{
 
-    const url =
-      env.GAS_URL +
-      "?action=" +
-      action;
+  const res = await fetch(
 
+    env.GAS_URL +
 
-    return json({
+    "?action=" +
 
-      step:"before fetch",
+    action
 
-      url:url
-
-    });
+  );
 
 
-  }
-  catch(e){
+  const text =
 
-    return json({
+    await res.text();
 
-      error:String(e)
 
-    },500);
+  return new Response(
 
-  }
+    text,
+
+    {
+
+      status:200,
+
+      headers:{
+
+        "Content-Type":
+
+          "application/json",
+
+        "Access-Control-Allow-Origin":
+
+          "*"
+
+      }
+
+    }
+
+  );
 
 }
 

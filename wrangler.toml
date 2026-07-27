@@ -3,3 +3,8 @@ name = "lively-lab-f3ff"
 main = "worker.js"
 
 compatibility_date = "2026-07-27"
+
+
+[vars]
+
+GAS_URL = "https://script.google.com/macros/s/AKfycbwYqMDvkpGgaDhYOq8ZRcUCibnVEitleSURwo1LseBFNv5oOFhOe_ilTZDXZRCcxf/exec"

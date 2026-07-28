@@ -1,0 +1,10 @@
+name = "long-firefly-a165"
+
+main = "worker.js"
+
+compatibility_date = "2026-07-27"
+
+
+[vars]
+
+GAS_URL = "https://script.google.com/macros/s/AKfycbz_JO19MjqJp6UbGYleIVScKBUT2BTLPEdk32Yag97kCFL6wp_cAVYRyMdi98wjdHgb/exec"

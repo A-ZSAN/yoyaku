@@ -11,12 +11,13 @@ content="width=device-width, initial-scale=1.0"
 >
 
 <title>
-予約完了
+予約管理
 </title>
+
 
 <link
 rel="stylesheet"
-href="css/style.css"
+href="../css/style.css"
 >
 
 </head>
@@ -30,7 +31,7 @@ href="css/style.css"
 <div class="header-inner">
 
 <h1>
-予約完了
+予約管理
 </h1>
 
 </div>
@@ -44,26 +45,19 @@ href="css/style.css"
 
 <section>
 
+
 <h2>
-ご予約ありがとうございます
+予約一覧
 </h2>
 
 
-<div id="completeMessage">
+<div
+id="reservationList"
+>
+
+読み込み中...
 
 </div>
-
-
-</section>
-
-
-<section>
-
-<a href="index.html">
-
-トップへ戻る
-
-</a>
 
 
 </section>
@@ -73,62 +67,12 @@ href="css/style.css"
 
 
 
-<script>
+<script src="../js/config.js"></script>
 
-const data =
-
-JSON.parse(
-
-localStorage.getItem(
-"reservationResult"
-)
-
-);
-
-
-
-if(data){
-
-
-document
-
-.getElementById(
-"completeMessage"
-)
-
-.innerHTML = `
-
-<p>
-予約番号：
-${data.reservationNo}
-</p>
-
-<p>
-利用日：
-${data.useDate}
-</p>
-
-
-<p>
-人数：
-${data.people}名
-</p>
-
-
-<p>
-合計金額：
-${Number(data.totalPrice).toLocaleString()}円
-</p>
-
-`;
-
-
-}
-
-
-</script>
+<script src="../js/reservation-admin.js"></script>
 
 
 </body>
+
 
 </html>

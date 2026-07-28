@@ -641,3 +641,60 @@ textarea{
   background:#eee;
 
 }
+
+/*==================================================
+ 管理画面
+==================================================*/
+
+
+.admin-menu{
+
+  display:grid;
+
+  grid-template-columns:
+
+  repeat(auto-fit,minmax(220px,1fr));
+
+  gap:20px;
+
+  margin-top:20px;
+
+}
+
+
+
+.admin-card{
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  min-height:100px;
+
+  background:#fff;
+
+  border-radius:12px;
+
+  box-shadow:
+
+    0 2px 8px rgba(0,0,0,0.15);
+
+  text-decoration:none;
+
+  color:#333;
+
+  font-size:20px;
+
+  font-weight:bold;
+
+}
+
+
+
+.admin-card:hover{
+
+  opacity:0.8;
+
+}

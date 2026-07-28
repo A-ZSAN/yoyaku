@@ -14,7 +14,6 @@ content="width=device-width, initial-scale=1.0"
 予約管理
 </title>
 
-
 <link
 rel="stylesheet"
 href="../css/style.css"
@@ -39,20 +38,44 @@ href="../css/style.css"
 </header>
 
 
-
 <main>
 
 
 <section>
 
 
-<h2>
-予約一覧
+<div class="calendar-header">
+
+
+<button
+id="prevMonth"
+type="button"
+>
+←
+</button>
+
+
+<h2
+id="calendarTitle"
+>
 </h2>
 
 
+<button
+id="nextMonth"
+type="button"
+>
+→
+</button>
+
+
+</div>
+
+
+
 <div
-id="reservationList"
+id="reservationCalendar"
+class="calendar"
 >
 
 読み込み中...
@@ -62,6 +85,38 @@ id="reservationList"
 
 </section>
 
+
+
+<section>
+
+
+<h2>
+予約状況
+</h2>
+
+
+<div
+id="reservationInfo"
+>
+
+日付を選択してください
+
+</div>
+
+
+</section>
+
+<div id="reservationModal" class="modal" style="display:none;">
+
+  <div class="modal-content">
+
+    <span id="closeModal" class="modal-close">&times;</span>
+
+    <div id="modalBody"></div>
+
+  </div>
+
+</div>
 
 </main>
 
@@ -73,6 +128,5 @@ id="reservationList"
 
 
 </body>
-
 
 </html>

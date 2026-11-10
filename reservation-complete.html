@@ -80,7 +80,9 @@ const data =
 JSON.parse(
 
 localStorage.getItem(
+
 "reservationResult"
+
 )
 
 );
@@ -93,7 +95,9 @@ if(data){
 document
 
 .getElementById(
+
 "completeMessage"
+
 )
 
 .innerHTML = `
@@ -108,19 +112,28 @@ ${data.reservationNo}
 ${data.useDate}
 </p>
 
-
 <p>
 人数：
 ${data.people}名
 </p>
 
-
 <p>
 合計金額：
-${Number(data.totalPrice).toLocaleString()}円
+${Number(
+
+data.totalPrice
+
+).toLocaleString()}円
 </p>
 
 `;
+
+
+localStorage.removeItem(
+
+"reservationResult"
+
+);
 
 
 }

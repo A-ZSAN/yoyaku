@@ -212,15 +212,23 @@ async function loadNews(){
 
       div.innerHTML = `
 
-        <div>
-          ${item.date || ""}
-        </div>
+<div>
 
-        <div>
-          ${item.text || ""}
-        </div>
+<strong>
 
-      `;
+${item.title || ""}
+
+</strong>
+
+</div>
+
+<div>
+
+${item.content || ""}
+
+</div>
+
+`;
 
 
       area.appendChild(div);

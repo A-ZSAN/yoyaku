@@ -50,6 +50,7 @@ href="../css/style.css"
 <button
 id="prevMonth"
 type="button"
+aria-label="前月"
 >
 ←
 </button>
@@ -58,12 +59,16 @@ type="button"
 <h2
 id="calendarTitle"
 >
+
+読み込み中...
+
 </h2>
 
 
 <button
 id="nextMonth"
 type="button"
+aria-label="次月"
 >
 →
 </button>
@@ -106,17 +111,35 @@ id="reservationInfo"
 
 </section>
 
-<div id="reservationModal" class="modal" style="display:none;">
 
-  <div class="modal-content">
 
-    <span id="closeModal" class="modal-close">&times;</span>
+<!-- 予約詳細モーダル -->
 
-    <div id="modalBody"></div>
+<div
+id="reservationModal"
+class="modal"
+style="display:none;"
+>
 
-  </div>
+<div class="modal-content">
+
+<span
+id="closeModal"
+class="modal-close"
+>
+&times;
+</span>
+
+<div
+id="modalBody"
+>
 
 </div>
+
+</div>
+
+</div>
+
 
 </main>
 

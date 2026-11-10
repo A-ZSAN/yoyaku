@@ -794,29 +794,41 @@ async function saveReservationStatus(
 
 ){
 
-  const status =
+  try{
 
-    document
-      .getElementById(
-        "statusSelect"
-      )
-      .value;
+    const status =
+
+      document
+        .getElementById(
+          "statusSelect"
+        )
+        .value;
 
 
- try{
+    await updateStatus(
 
-    await updateStatus(...);
+      reservationNo,
+
+      status
+
+    );
+
 
     closeReservationModal();
 
     await loadReservations();
 
-}
-catch(error){
+  }
+  catch(error){
 
-    alert(error.message);
+    alert(
 
- }
+      error.message
+
+    );
+
+  }
+
 }
 
 //==================================================

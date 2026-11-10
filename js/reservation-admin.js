@@ -882,11 +882,7 @@ async function updateStatus(
     await res.json();
 
 
-  if(
-
-    !data.success
-
-  ){
+  if(!data.success){
 
     throw new Error(
 

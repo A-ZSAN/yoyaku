@@ -803,17 +803,102 @@ async function saveReservationStatus(
       .value;
 
 
-  await updateStatus(
+ try{
 
-    reservationNo,
+    await updateStatus(...);
 
-    status
+    closeReservationModal();
 
-  );
+    await loadReservations();
+
+}
+catch(error){
+
+    alert(error.message);
+
+ }
+}
+
+//==================================================
+// 状態更新
+//==================================================
+
+async function updateStatus(
+
+  reservationNo,
+
+  status
+
+){
+
+  const res =
+
+    await fetch(
+
+      API_URL +
+
+      "/api/reservation/update",
+
+      {
+
+        method:"POST",
+
+        headers:{
+
+          "Content-Type":
+
+            "application/json"
+
+        },
+
+        body:
+
+          JSON.stringify({
+
+            reservationNo,
+
+            status
+
+          })
+
+      }
+
+    );
 
 
-  closeReservationModal();
+  if(!res.ok){
 
-  await loadReservations();
+    throw new Error(
+
+      "通信エラー"
+
+    );
+
+  }
+
+
+  const data =
+
+    await res.json();
+
+
+  if(
+
+    !data.success
+
+  ){
+
+    throw new Error(
+
+      data.message ||
+
+      "更新に失敗しました"
+
+    );
+
+  }
+
+
+  return data;
 
 }

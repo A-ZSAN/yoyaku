@@ -49,52 +49,57 @@ document.addEventListener(
     await loadCalendar();
 
 
-    document
-
-.getElementById(
-"minusPeople"
-)
-
-.onclick = ()=>{
-
-
-  if(people > 1){
-
-    people--;
-
     updatePeople();
-
-  }
-
-
-};
-
-
-
-document
-
-.getElementById(
-"plusPeople"
-)
-
-.onclick = ()=>{
-
-
-  if(people < 10){
-
-    people++;
-
-    updatePeople();
-
-  }
-
-
-};
 
 
     document
 
-      .getElementById("reserveButton")
+      .getElementById(
+        "minusPeople"
+      )
+
+      .onclick = ()=>{
+
+
+        if(people > 1){
+
+          people--;
+
+          updatePeople();
+
+        }
+
+
+      };
+
+
+
+    document
+
+      .getElementById(
+        "plusPeople"
+      )
+
+      .onclick = ()=>{
+
+
+        if(people < 10){
+
+          people++;
+
+          updatePeople();
+
+        }
+
+
+      };
+
+
+    document
+
+      .getElementById(
+        "reserveButton"
+      )
 
       .addEventListener(
 
@@ -119,12 +124,29 @@ async function loadPrices(){
 
 
   const res =
+
     await fetch(
-      API_URL + "/api/prices"
+
+      API_URL +
+
+      "/api/prices"
+
     );
 
 
+  if(!res.ok){
+
+    throw new Error(
+
+      "通信エラー"
+
+    );
+
+  }
+
+
   const data =
+
     await res.json();
 
 
@@ -133,17 +155,18 @@ async function loadPrices(){
 
 
     unitPrice =
+
       Number(
+
         data[0].price
+
       );
 
 
   }
 
+
 }
-
-
-
 //==================================================
 // カレンダー取得
 //==================================================
@@ -152,12 +175,29 @@ async function loadCalendar(){
 
 
   const res =
+
     await fetch(
-      API_URL + "/api/calendar"
+
+      API_URL +
+
+      "/api/calendar"
+
     );
 
 
+  if(!res.ok){
+
+    throw new Error(
+
+      "通信エラー"
+
+    );
+
+  }
+
+
   calendarData =
+
     await res.json();
 
 
@@ -168,19 +208,24 @@ async function loadCalendar(){
 
   document
 
-    .getElementById("prevMonth")
+    .getElementById(
+      "prevMonth"
+    )
 
     .onclick = ()=>{
 
 
-      currentMonth.setMonth(
+      if(currentMonth > minMonth){
 
-        currentMonth.getMonth() - 1
+        currentMonth.setMonth(
 
-      );
+          currentMonth.getMonth() - 1
 
+        );
 
-      renderCalendar();
+        renderCalendar();
+
+      }
 
 
     };
@@ -189,27 +234,30 @@ async function loadCalendar(){
 
   document
 
-    .getElementById("nextMonth")
+    .getElementById(
+      "nextMonth"
+    )
 
     .onclick = ()=>{
 
 
-      currentMonth.setMonth(
+      if(currentMonth < maxMonth){
 
-        currentMonth.getMonth() + 1
+        currentMonth.setMonth(
 
-      );
+          currentMonth.getMonth() + 1
 
+        );
 
-      renderCalendar();
+        renderCalendar();
+
+      }
 
 
     };
 
 
 }
-
-
 
 //==================================================
 // カレンダー表示
@@ -219,16 +267,18 @@ function renderCalendar(){
 
 
   const area =
+
     document.getElementById(
       "calendar"
     );
 
 
-  area.innerHTML="";
+  area.innerHTML = "";
 
 
 
   const title =
+
     document.getElementById(
       "calendarTitle"
     );
@@ -245,7 +295,7 @@ function renderCalendar(){
 
     (
 
-      currentMonth.getMonth()+1
+      currentMonth.getMonth() + 1
 
     )
 
@@ -279,10 +329,10 @@ function renderCalendar(){
 
 
 
-
   const week =
 
     [
+
       "日",
       "月",
       "火",
@@ -290,6 +340,7 @@ function renderCalendar(){
       "木",
       "金",
       "土"
+
     ];
 
 
@@ -298,6 +349,7 @@ function renderCalendar(){
 
 
     const div =
+
       document.createElement(
         "div"
       );
@@ -340,7 +392,7 @@ function renderCalendar(){
 
       currentMonth.getFullYear(),
 
-      currentMonth.getMonth()+1,
+      currentMonth.getMonth() + 1,
 
       0
 
@@ -348,13 +400,16 @@ function renderCalendar(){
 
 
 
-
   // 空白
 
   for(
-    let i=0;
-    i<firstDay;
+
+    let i = 0;
+
+    i < firstDay;
+
     i++
+
   ){
 
     area.appendChild(
@@ -369,13 +424,16 @@ function renderCalendar(){
 
 
 
-
   // 日付
 
   for(
-    let d=1;
-    d<=lastDate;
+
+    let d = 1;
+
+    d <= lastDate;
+
     d++
+
   ){
 
 
@@ -390,8 +448,11 @@ function renderCalendar(){
       +
 
       String(
-        currentMonth.getMonth()+1
+
+        currentMonth.getMonth() + 1
+
       )
+
       .padStart(2,"0")
 
       +
@@ -401,6 +462,7 @@ function renderCalendar(){
       +
 
       String(d)
+
       .padStart(2,"0");
 
 
@@ -410,6 +472,7 @@ function renderCalendar(){
       calendarData.find(
 
         x =>
+
           x.date === dateText
 
       );
@@ -426,7 +489,6 @@ function renderCalendar(){
 
     button.textContent =
       d;
-
 
 
     button.type =
@@ -448,8 +510,13 @@ function renderCalendar(){
 
 
 
+    if(
 
-    if(day && day.available){
+      day &&
+
+      day.available
+
+    ){
 
 
       button.onclick = ()=>{
@@ -469,14 +536,21 @@ function renderCalendar(){
           .value =
           dateText;
 
+
+
         document
+
           .getElementById(
-          "selectedDateText"
-        )
-        .textContent =
-        
+            "selectedDateText"
+          )
+
+          .textContent =
+
           "利用日：" +
+
           dateText;
+
+
 
         document
 
@@ -486,11 +560,9 @@ function renderCalendar(){
 
           .forEach(btn=>{
 
-
             btn.classList.remove(
               "selected"
             );
-
 
           });
 
@@ -521,27 +593,30 @@ function renderCalendar(){
 //==================================================
 // 人数更新
 //==================================================
+
 function updatePeople(){
 
 
   document
 
-  .getElementById(
-    "peopleDisplay"
-  )
+    .getElementById(
+      "peopleDisplay"
+    )
 
-  .textContent =
+    .textContent =
+
     people;
 
 
 
   document
 
-  .getElementById(
-    "people"
-  )
+    .getElementById(
+      "people"
+    )
 
-  .value =
+    .value =
+
     people;
 
 
@@ -550,6 +625,8 @@ function updatePeople(){
 
 
 }
+
+
 
 //==================================================
 // 金額表示
@@ -564,11 +641,11 @@ function updatePrice(){
 
       document
 
-      .getElementById(
-        "people"
-      )
+        .getElementById(
+          "people"
+        )
 
-      .value
+        .value
 
     );
 
@@ -590,7 +667,6 @@ function updatePrice(){
 
     .textContent =
 
-
       total.toLocaleString()
 
       +
@@ -600,12 +676,6 @@ function updatePrice(){
 
 }
 
-
-
-//==================================================
-// 予約送信
-//==================================================
-
 //==================================================
 // 予約送信
 //==================================================
@@ -613,176 +683,224 @@ function updatePrice(){
 async function sendReservation(){
 
 
-  if(!selectedDate){
+  const reserveButton =
 
-    alert(
-      "利用日を選択してください"
+    document.getElementById(
+      "reserveButton"
     );
+
+
+  if(reserveButton.disabled){
 
     return;
 
   }
 
 
-
-  const name =
-
-    document
-      .getElementById("name")
-      .value
-      .trim();
+  reserveButton.disabled = true;
 
 
+  try{
 
-  if(!name){
 
-    alert(
-      "お名前を入力してください"
-    );
+    if(!selectedDate){
 
-    return;
+      alert(
+        "利用日を選択してください"
+      );
+
+      return;
+
+    }
+
+
+
+    const name =
+
+      document
+        .getElementById("name")
+        .value
+        .trim();
+
+
+
+    if(!name){
+
+      alert(
+        "お名前を入力してください"
+      );
+
+      return;
+
+    }
+
+
+
+    const phone =
+
+      document
+        .getElementById("phone")
+        .value
+        .trim();
+
+
+
+    if(!phone){
+
+      alert(
+        "電話番号を入力してください"
+      );
+
+      return;
+
+    }
+
+
+
+    const body = {
+
+      useDate:
+        selectedDate,
+
+
+      company:
+        document.getElementById("company").value,
+
+
+      name:
+        name,
+
+
+      phone:
+        phone,
+
+
+      mail:
+        document.getElementById("mail").value,
+
+
+      people:
+        Number(
+          document.getElementById("people").value
+        ),
+
+
+      memo:
+        document.getElementById("memo").value
+
+    };
+
+
+
+    const res =
+
+      await fetch(
+
+        API_URL +
+        "/api/reservation",
+
+        {
+
+          method:"POST",
+
+          headers:{
+
+            "Content-Type":
+            "application/json"
+
+          },
+
+
+          body:
+
+            JSON.stringify(body)
+
+        }
+
+      );
+
+
+    if(!res.ok){
+
+      throw new Error(
+
+        "通信エラー"
+
+      );
+
+    }
+
+
+    const data =
+
+      await res.json();
+
+
+
+    if(data.success){
+
+
+      localStorage.setItem(
+
+        "reservationResult",
+
+        JSON.stringify({
+
+          reservationNo:
+            data.reservationNo,
+
+
+          useDate:
+            selectedDate,
+
+
+          people:
+            body.people,
+
+
+          totalPrice:
+            data.totalPrice
+
+        })
+
+      );
+
+
+
+      location.href =
+
+        "reservation-complete.html";
+
+
+    }
+    else{
+
+
+      alert(
+
+        data.message
+
+      );
+
+
+    }
+
 
   }
+  catch(error){
 
-
-
-  const phone =
-
-    document
-      .getElementById("phone")
-      .value
-      .trim();
-
-
-
-  if(!phone){
+    console.error(error);
 
     alert(
-      "電話番号を入力してください"
-    );
 
-    return;
+      "通信エラーが発生しました。"
+
+    );
 
   }
+  finally{
 
-
-
-  const body = {
-
-    useDate:
-      selectedDate,
-
-
-    company:
-      document.getElementById("company").value,
-
-
-    name:
-      name,
-
-
-    phone:
-      phone,
-
-
-    mail:
-      document.getElementById("mail").value,
-
-
-    people:
-      Number(
-        document.getElementById("people").value
-      ),
-
-
-    memo:
-      document.getElementById("memo").value
-
-  };
-
-
-
-  const res =
-
-    await fetch(
-
-      API_URL +
-      "/api/reservation",
-
-      {
-
-        method:"POST",
-
-        headers:{
-
-          "Content-Type":
-          "application/json"
-
-        },
-
-
-        body:
-
-          JSON.stringify(body)
-
-      }
-
-    );
-
-
-
-  const data =
-
-    await res.json();
-
-
-
-  if(data.success){
-
-
-    localStorage.setItem(
-
-      "reservationResult",
-
-      JSON.stringify({
-
-        reservationNo:
-          data.reservationNo,
-
-
-        useDate:
-          selectedDate,
-
-
-        people:
-          body.people,
-
-
-        totalPrice:
-          data.totalPrice
-
-      })
-
-    );
-
-
-
-    location.href =
-
-      "reservation-complete.html";
-
-
-  }
-
-  else{
-
-
-    alert(
-
-      data.message
-
-    );
-
+    reserveButton.disabled = false;
 
   }
 

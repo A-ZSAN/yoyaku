@@ -43,6 +43,17 @@ async function loadSite(){
     );
 
 
+    if(!res.ok){
+
+      throw new Error(
+
+        "通信エラー"
+
+      );
+
+    }
+
+
     const data =
 
       await res.json();
@@ -87,14 +98,24 @@ async function loadSite(){
 
     // 画像
 
+    const heroImage =
+
+      document.getElementById(
+        "heroImage"
+      );
+
+
     if(data.image){
 
-      document
-        .getElementById(
-          "heroImage"
-        )
-        .src =
-          data.image;
+      heroImage.src =
+        data.image;
+
+    }
+    else{
+
+      heroImage.removeAttribute(
+        "src"
+      );
 
     }
 
@@ -131,6 +152,17 @@ async function loadNews(){
       "/api/news"
 
     );
+
+
+    if(!res.ok){
+
+      throw new Error(
+
+        "通信エラー"
+
+      );
+
+    }
 
 
     const data =
@@ -211,9 +243,6 @@ async function loadNews(){
   }
 
 }
-
-
-
 //==================================================
 // 料金取得
 //==================================================
@@ -222,7 +251,6 @@ async function loadPrices(){
 
   try{
 
-
     const res = await fetch(
 
       API_URL +
@@ -230,6 +258,17 @@ async function loadPrices(){
       "/api/prices"
 
     );
+
+
+    if(!res.ok){
+
+      throw new Error(
+
+        "通信エラー"
+
+      );
+
+    }
 
 
     const data =
@@ -244,7 +283,7 @@ async function loadPrices(){
       );
 
 
-    area.innerHTML="";
+    area.innerHTML = "";
 
 
     if(
@@ -263,7 +302,7 @@ async function loadPrices(){
     }
 
 
-    data.forEach(price=>{
+    data.forEach(price => {
 
 
       const div =
@@ -279,12 +318,13 @@ async function loadPrices(){
 
       div.textContent =
 
-        price.name +
+        (price.name || "") +
 
         "　" +
 
-        Number(price.price)
-          .toLocaleString() +
+        Number(
+          price.price || 0
+        ).toLocaleString() +
 
         "円";
 

@@ -15,28 +15,56 @@
 </header>
 
 <main>
+  <!-- ヒーロー画像 -->
   <section class="hero">
     <img id="heroImage" src="img/hero-placeholder.jpg" alt="施設画像">
   </section>
 
+  <!-- 簡易予約フォーム（最上部に配置） -->
+  <section class="quick-reserve">
+    <h2>ご予約</h2>
+    <form action="reservation.html" method="get">
+      <div class="quick-form">
+        <div class="form-item">
+          <label for="date">利用日</label>
+          <input type="date" id="date" name="date" required>
+        </div>
+        <div class="form-item">
+          <label for="people">人数</label>
+          <select id="people" name="people" required>
+            <option value="1">1名</option>
+            <option value="2" selected>2名</option>
+            <option value="3">3名</option>
+            <option value="4">4名</option>
+            <option value="5">5名</option>
+            <option value="6">6名以上</option>
+          </select>
+        </div>
+        <div class="form-item button-item">
+          <button type="submit" class="reserve-btn">予約する</button>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <!-- 施設紹介 -->
   <section>
     <h2>施設紹介</h2>
     <p id="description">読み込み中...</p>
   </section>
 
+  <!-- お知らせ -->
   <section>
     <h2>お知らせ</h2>
     <div id="news">読み込み中...</div>
   </section>
 
+  <!-- 基本料金 -->
   <section>
     <h2>基本料金</h2>
     <div id="prices">読み込み中...</div>
   </section>
 
-  <section class="reserve-area">
-    <a href="reservation.html" class="reserve-btn">予約する</a>
-  </section>
 </main>
 
 <footer>

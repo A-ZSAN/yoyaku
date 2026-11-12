@@ -1,18 +1,23 @@
-//==================================================
-// 温泉予約システム
-// TOPページ処理
-//==================================================
-
-
-//==================================================
-// 初期処理
-//==================================================
-
 document.addEventListener("DOMContentLoaded", () => {
   loadSite();
   loadNews();
   loadPrices();
+  setDefaultDate();
 });
+
+// 今日の日付を自動入力
+function setDefaultDate() {
+  const dateInput = document.getElementById("date");
+  if (!dateInput) return;
+
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+
+  dateInput.value = `${year}-${month}-${day}`;
+  dateInput.min = `${year}-${month}-${day}`; // 過去日を選択不可にする
+}
 
 // 施設情報取得
 async function loadSite() {

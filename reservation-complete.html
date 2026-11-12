@@ -1,147 +1,98 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1.0"
->
-
-<title>
-予約完了
-</title>
-
-<link
-rel="stylesheet"
-href="css/style.css"
->
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>予約完了</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
-
-
 <body>
 
-
 <header>
-
-<div class="header-inner">
-
-<h1>
-予約完了
-</h1>
-
-</div>
-
+  <div class="header-inner">
+    <h1>予約完了</h1>
+  </div>
 </header>
 
-
-
 <main>
+  <section class="reservation-section" style="text-align: center;">
+    <h2>ご予約ありがとうございます</h2>
+    <p style="font-size: 1.1rem; margin: 24px 0;">
+      以下の内容で予約を受け付けました。
+    </p>
 
+    <div class="reservation-result">
+      <div class="result-item">
+        <span class="result-label">予約番号</span>
+        <span class="result-value" id="reservationNo">-</span>
+      </div>
+      <div class="result-item">
+        <span class="result-label">利用日</span>
+        <span class="result-value" id="useDate">-</span>
+      </div>
+      <div class="result-item">
+        <span class="result-label">人数</span>
+        <span class="result-value" id="people">-</span>
+      </div>
+      <div class="result-item">
+        <span class="result-label">合計金額</span>
+        <span class="result-value" id="totalPrice">-</span>
+      </div>
+    </div>
 
-<section>
+    <div style="margin-top: 32px;">
+      <a href="index.html" class="reserve-btn" style="background-color: #555;">
+        トップページに戻る
+      </a>
+    </div>
 
-<h2>
-ご予約ありがとうございます
-</h2>
-
-
-<div id="completeMessage">
-
-</div>
-
-
-</section>
-
-
-<section>
-
-<a href="index.html">
-
-トップへ戻る
-
-</a>
-
-
-</section>
-
-
+    <p style="margin-top: 32px; color: #666; font-size: 0.95rem;">
+      ご予約内容の確認メールをお送りしました。<br>
+      ご不明点がございましたらお気軽にお問い合わせください。
+    </p>
+  </section>
 </main>
 
-
-
 <script>
+// 予約完了ページ用スクリプト
+document.addEventListener("DOMContentLoaded", () => {
+  const result = localStorage.getItem("reservationResult");
 
-const data =
+  if (!result) {
+    // データがない場合はトップページへ戻す
+    alert("予約情報が見つかりません。トップページに戻ります。");
+    location.href = "index.html";
+    return;
+  }
 
-JSON.parse(
+  try {
+    const data = JSON.parse(result);
 
-localStorage.getItem(
+    // 各項目を表示
+    if (data.reservationNo) {
+      document.getElementById("reservationNo").textContent = data.reservationNo;
+    }
+    if (data.useDate) {
+      document.getElementById("useDate").textContent = data.useDate;
+    }
+    if (data.people) {
+      document.getElementById("people").textContent = data.people + "名";
+    }
+    if (data.totalPrice) {
+      document.getElementById("totalPrice").textContent = 
+        "¥" + Number(data.totalPrice).toLocaleString();
+    }
 
-"reservationResult"
+    // 表示後にlocalStorageをクリア（セキュリティ・プライバシー対策）
+    localStorage.removeItem("reservationResult");
 
-)
-
-);
-
-
-
-if(data){
-
-
-document
-
-.getElementById(
-
-"completeMessage"
-
-)
-
-.innerHTML = `
-
-<p>
-予約番号：
-${data.reservationNo}
-</p>
-
-<p>
-利用日：
-${data.useDate}
-</p>
-
-<p>
-人数：
-${data.people}名
-</p>
-
-<p>
-合計金額：
-${Number(
-
-data.totalPrice
-
-).toLocaleString()}円
-</p>
-
-`;
-
-
-localStorage.removeItem(
-
-"reservationResult"
-
-);
-
-
-}
-
-
+  } catch (e) {
+    console.error("予約結果の表示に失敗しました", e);
+    alert("予約情報の表示に失敗しました。");
+    location.href = "index.html";
+  }
+});
 </script>
 
-
 </body>
-
 </html>

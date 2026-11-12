@@ -105,7 +105,7 @@ function renderCalendar() {
 
   title.textContent = `${year}年${month + 1}月`;
 
-  // ボタン無効化制御
+  // ボタン制御
   document.getElementById("prevMonth").disabled = currentMonth <= minMonth;
   document.getElementById("nextMonth").disabled = currentMonth >= maxMonth;
 
@@ -138,10 +138,16 @@ function renderCalendar() {
 
     const targetDate = new Date(year, month, d);
     const isPast = targetDate < today;
-    const isAvailable = dayData && dayData.available;
 
-    if (isAvailable && !isPast) {
-      button.className = "calendar-day";
+    if (dayData && dayData.available && !isPast) {
+      // 空きありの場合
+      button.className = "calendar-day available";
+
+      // 残り枠が少ない場合（例: 3名以下）の色分け
+      if (dayData.remaining !== undefined && dayData.remaining <= 3) {
+        button.className = "calendar-day few";
+      }
+
       button.onclick = () => {
         selectedDate = dateStr;
         document.getElementById("useDate").value = dateStr;

@@ -5,8 +5,4 @@
 
 
 // Cloudflare Worker URL
-
-const API_URL =
-
-"https://long-firefly-a165.1517443101j.workers.dev";
-
+const API_URL = "https://long-firefly-a165.1517443101j.workers.dev";

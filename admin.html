@@ -6,59 +6,15 @@
   <title>予約管理</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
-    .search-bar {
-      margin-bottom: 20px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .search-bar input {
-      padding: 10px;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      flex: 1;
-      min-width: 200px;
-    }
-    .admin-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-    }
-    .admin-table th,
-    .admin-table td {
-      padding: 12px;
-      border: 1px solid #ddd;
-      text-align: left;
-    }
-    .admin-table th {
-      background-color: #2c3e50;
-      color: white;
-    }
-    .cancel-btn {
-      background-color: #e74c3c;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background: white;
-      padding: 24px;
-      border-radius: 12px;
-      max-width: 500px;
-      width: 90%;
-    }
+    .admin-table { width: 100%; border-collapse: collapse; background: white; }
+    .admin-table th, .admin-table td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+    .admin-table th { background-color: #2c3e50; color: white; }
+    .cancel-btn { background-color: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+    .payment-btn { background-color: #27ae60; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+    .payment-btn.paid { background-color: #95a5a6; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+    .modal-content { background: white; padding: 24px; border-radius: 12px; max-width: 500px; width: 90%; }
+    .search-bar { margin-bottom: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
   </style>
 </head>
 <body>
@@ -73,10 +29,10 @@
   <section class="reservation-section">
     <h2>予約一覧</h2>
 
-    <!-- 検索バー -->
     <div class="search-bar">
       <input type="text" id="searchKeyword" placeholder="名前・電話番号で検索">
       <input type="date" id="searchDate">
+      <label><input type="checkbox" id="showCanceled"> キャンセルも表示</label>
       <button onclick="filterReservations()">検索</button>
       <button onclick="resetFilter()">リセット</button>
     </div>
@@ -90,6 +46,7 @@
           <th>利用日</th>
           <th>名前</th>
           <th>人数</th>
+          <th>支払い</th>
           <th>操作</th>
         </tr>
       </thead>
@@ -133,7 +90,6 @@ async function loadReservations() {
 
     loading.style.display = "none";
     table.style.display = "table";
-
     renderTable(filteredReservations);
   } catch (error) {
     console.error(error);
@@ -145,13 +101,26 @@ function renderTable(list) {
   const tbody = document.getElementById("reservationList");
   tbody.innerHTML = "";
 
+  // キャンセル非表示の制御
+  const showCanceled = document.getElementById("showCanceled").checked;
+
   list.forEach(res => {
+    // キャンセルは非表示（チェックがオフの場合）
+    if (res.status === "キャンセル" && !showCanceled) return;
+
     const tr = document.createElement("tr");
+    const isPaid = res.payment === "支払済";
+
     tr.innerHTML = `
       <td>${res.reservationNo}</td>
       <td>${res.useDate}</td>
       <td>${res.name}</td>
       <td>${res.people}名</td>
+      <td>
+        <button class="payment-btn ${isPaid ? 'paid' : ''}" onclick="togglePayment('${res.reservationNo}', this)">
+          ${isPaid ? '支払済' : '未払い'}
+        </button>
+      </td>
       <td>
         <button onclick="showDetail('${res.reservationNo}')">詳細</button>
       </td>
@@ -163,14 +132,13 @@ function renderTable(list) {
 function filterReservations() {
   const keyword = document.getElementById("searchKeyword").value.toLowerCase().trim();
   const date = document.getElementById("searchDate").value;
+  const showCanceled = document.getElementById("showCanceled").checked;
 
   filteredReservations = allReservations.filter(r => {
-    const matchKeyword = 
-      r.name.toLowerCase().includes(keyword) || 
-      (r.phone && r.phone.includes(keyword));
+    const matchKeyword = r.name.toLowerCase().includes(keyword) || (r.phone && r.phone.includes(keyword));
     const matchDate = !date || r.useDate === date;
-
-    return matchKeyword && matchDate;
+    const matchStatus = showCanceled || r.status !== "キャンセル";
+    return matchKeyword && matchDate && matchStatus;
   });
 
   renderTable(filteredReservations);
@@ -179,6 +147,7 @@ function filterReservations() {
 function resetFilter() {
   document.getElementById("searchKeyword").value = "";
   document.getElementById("searchDate").value = "";
+  document.getElementById("showCanceled").checked = false;
   filteredReservations = [...allReservations];
   renderTable(filteredReservations);
 }
@@ -198,6 +167,7 @@ function showDetail(reservationNo) {
     <p><strong>人数：</strong>${reservation.people}名</p>
     <p><strong>備考：</strong>${reservation.memo || "-"}</p>
     <p><strong>合計金額：</strong>¥${Number(reservation.totalPrice || 0).toLocaleString()}</p>
+    <p><strong>支払い情報：</strong>${reservation.payment || "未払い"}</p>
   `;
 
   document.getElementById("cancelBtn").onclick = () => cancelReservation(reservationNo);
@@ -215,7 +185,6 @@ async function cancelReservation(reservationNo) {
     const res = await fetch(API_URL + `/api/reservation/${reservationNo}`, {
       method: "DELETE"
     });
-
     if (!res.ok) throw new Error("通信エラー");
 
     const data = await res.json();
@@ -231,6 +200,42 @@ async function cancelReservation(reservationNo) {
     alert("通信エラーが発生しました");
   }
 }
+
+async function togglePayment(reservationNo, btn) {
+  const current = btn.textContent;
+  const newStatus = current === "支払済" ? "" : "支払済";
+
+  try {
+    const res = await fetch(API_URL + "/api/reservation", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "updatePaymentStatus",
+        reservationNo: reservationNo,
+        payment: newStatus
+      })
+    });
+    if (!res.ok) throw new Error("通信エラー");
+
+    const data = await res.json();
+    if (data.success) {
+      btn.textContent = newStatus ? "支払済" : "未払い";
+      btn.classList.toggle("paid", !!newStatus);
+      // ローカルデータ更新
+      const target = allReservations.find(r => r.reservationNo === reservationNo);
+      if (target) target.payment = newStatus;
+    } else {
+      alert("更新に失敗しました");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("通信エラーが発生しました");
+  }
+}
+
+document.getElementById("showCanceled").addEventListener("change", () => {
+  renderTable(filteredReservations);
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   loadReservations();

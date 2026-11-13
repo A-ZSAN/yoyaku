@@ -24,7 +24,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadCalendar();
   restoreFormData();
   attachFormListeners();
-  autoSelectDateFromUrl();     // ← 追加：URLから日付を自動選択
+
+  // URLから日付・人数を反映
+  applyUrlParams();
 
   // 人数ボタン
   document.getElementById("minusPeople").onclick = () => {
@@ -45,28 +47,46 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 //==================================================
-// URLから日付を自動選択
+// URLパラメータから日付・人数を反映
 //==================================================
-function autoSelectDateFromUrl() {
+function applyUrlParams() {
   const params = new URLSearchParams(window.location.search);
   const dateParam = params.get("date");
+  const peopleParam = params.get("people");
 
-  if (!dateParam) return;
+  // 人数を反映
+  if (peopleParam) {
+    const num = parseInt(peopleParam);
+    if (num >= 1 && num <= 20) {
+      people = num;
+      document.getElementById("people").value = num;
+      document.getElementById("peopleDisplay").textContent = num;
+      calculatePrice();
+    }
+  }
 
-  // カレンダーが描画された後に選択する
-  setTimeout(() => {
-    const buttons = document.querySelectorAll(".calendar-day.available, .calendar-day.few");
+  // 日付を自動選択（カレンダー描画後に実行）
+  if (dateParam) {
+    setTimeout(() => {
+      selectDateFromCalendar(dateParam);
+    }, 600);
+  }
+}
 
-    buttons.forEach(btn => {
-      const day = parseInt(btn.textContent, 10);
-      const targetDate = new Date(dateParam);
-      const targetDay = targetDate.getDate();
+//==================================================
+// カレンダーから日付を選択
+//==================================================
+function selectDateFromCalendar(dateStr) {
+  const buttons = document.querySelectorAll(".calendar-day.available, .calendar-day.few");
 
-      if (day === targetDay) {
-        btn.click();
-      }
-    });
-  }, 500);
+  buttons.forEach(btn => {
+    const day = parseInt(btn.textContent, 10);
+    const targetDay = new Date(dateStr).getDate();
+
+    if (day === targetDay) {
+      btn.click();
+    }
+  });
 }
 
 //==================================================
@@ -169,32 +189,9 @@ function renderCalendar() {
 //==================================================
 // 人数制御
 //==================================================
-function initPeopleControl() {
-  const minusBtn = document.getElementById("minusPeople");
-  const plusBtn = document.getElementById("plusPeople");
-  const display = document.getElementById("peopleDisplay");
-  const hidden = document.getElementById("people");
-
-  minusBtn.addEventListener("click", () => {
-    let num = parseInt(hidden.value) || 1;
-    if (num > 1) {
-      num--;
-      updatePeople(num, display, hidden);
-    }
-  });
-
-  plusBtn.addEventListener("click", () => {
-    let num = parseInt(hidden.value) || 1;
-    if (num < 20) {
-      num++;
-      updatePeople(num, display, hidden);
-    }
-  });
-}
-
-function updatePeople(num, display, hidden) {
-  display.textContent = num;
-  hidden.value = num;
+function updatePeople() {
+  document.getElementById("peopleDisplay").textContent = people;
+  document.getElementById("people").value = people;
   calculatePrice();
   saveFormData();
 }
@@ -203,17 +200,17 @@ function updatePeople(num, display, hidden) {
 // 料金計算
 //==================================================
 function calculatePrice() {
-  const people = parseInt(document.getElementById("people").value) || 0;
+  const peopleNum = parseInt(document.getElementById("people").value) || 0;
   const priceEl = document.getElementById("totalPrice");
 
-  if (people === 0) {
+  if (peopleNum === 0) {
     priceEl.textContent = "人数を選択してください";
     return;
   }
 
   const pricePerPerson = 2500;
-  const total = people * pricePerPerson;
-  priceEl.textContent = `¥${total.toLocaleString()}（${people}名）`;
+  const total = peopleNum * pricePerPerson;
+  priceEl.textContent = `¥${total.toLocaleString()}（${peopleNum}名）`;
 }
 
 //==================================================

@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadCalendar();
   restoreFormData();
   attachFormListeners();
+  autoSelectDateFromUrl();
 
   // 人数ボタン
   document.getElementById("minusPeople").onclick = () => {
@@ -302,4 +303,30 @@ async function sendReservation() {
   } finally {
     reserveButton.disabled = false;
   }
+}
+
+//==================================================
+// URLから日付を自動選択
+//==================================================
+function autoSelectDateFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const dateParam = params.get("date");
+
+  if (!dateParam) return;
+
+  // カレンダーの描画を待ってから選択
+  setTimeout(() => {
+    const buttons = document.querySelectorAll(".calendar-day.available, .calendar-day.few");
+
+    buttons.forEach(btn => {
+      // 日付が一致するボタンを探す
+      const day = parseInt(btn.textContent, 10);
+      const selectedDate = new Date(dateParam);
+      const targetDay = selectedDate.getDate();
+
+      if (day === targetDay) {
+        btn.click(); // 自動で選択状態にする
+      }
+    });
+  }, 400); // カレンダー描画を待つ
 }

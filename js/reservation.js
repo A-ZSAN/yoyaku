@@ -1,6 +1,6 @@
 //==================================================
 // 温泉予約システム
-// 予約画面（改善版）
+// 予約画面
 //==================================================
 
 let unitPrice = 0;
@@ -9,7 +9,6 @@ let selectedDate = null;
 let calendarData = [];
 let currentMonth = new Date();
 
-// 表示可能月範囲
 let minMonth = new Date();
 minMonth.setDate(1);
 
@@ -25,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadCalendar();
   restoreFormData();
   attachFormListeners();
-  autoSelectDateFromUrl();
+  autoSelectDateFromUrl();     // ← 追加：URLから日付を自動選択
 
   // 人数ボタン
   document.getElementById("minusPeople").onclick = () => {
@@ -46,24 +45,32 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 //==================================================
-// 料金取得
+// URLから日付を自動選択
 //==================================================
-async function loadPrices() {
-  try {
-    const res = await fetch(API_URL + "/api/prices");
-    if (!res.ok) throw new Error("通信エラー");
+function autoSelectDateFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const dateParam = params.get("date");
 
-    const data = await res.json();
-    if (data.length > 0) {
-      unitPrice = Number(data[0].price);
-    }
-  } catch (error) {
-    console.error("料金取得エラー:", error);
-  }
+  if (!dateParam) return;
+
+  // カレンダーが描画された後に選択する
+  setTimeout(() => {
+    const buttons = document.querySelectorAll(".calendar-day.available, .calendar-day.few");
+
+    buttons.forEach(btn => {
+      const day = parseInt(btn.textContent, 10);
+      const targetDate = new Date(dateParam);
+      const targetDay = targetDate.getDate();
+
+      if (day === targetDay) {
+        btn.click();
+      }
+    });
+  }, 500);
 }
 
 //==================================================
-// カレンダー取得
+// カレンダー関連
 //==================================================
 async function loadCalendar() {
   try {
@@ -73,7 +80,6 @@ async function loadCalendar() {
     calendarData = await res.json();
     renderCalendar();
 
-    // ボタン制御
     document.getElementById("prevMonth").onclick = () => {
       if (currentMonth > minMonth) {
         currentMonth.setMonth(currentMonth.getMonth() - 1);
@@ -92,9 +98,6 @@ async function loadCalendar() {
   }
 }
 
-//==================================================
-// カレンダー表示
-//==================================================
 function renderCalendar() {
   const area = document.getElementById("calendar");
   const title = document.getElementById("calendarTitle");
@@ -106,11 +109,9 @@ function renderCalendar() {
 
   title.textContent = `${year}年${month + 1}月`;
 
-  // ボタン制御
   document.getElementById("prevMonth").disabled = currentMonth <= minMonth;
   document.getElementById("nextMonth").disabled = currentMonth >= maxMonth;
 
-  // 曜日ヘッダー
   const week = ["日", "月", "火", "水", "木", "金", "土"];
   week.forEach(day => {
     const div = document.createElement("div");
@@ -119,7 +120,6 @@ function renderCalendar() {
     area.appendChild(div);
   });
 
-  // 空白セル
   const firstDay = new Date(year, month, 1).getDay();
   for (let i = 0; i < firstDay; i++) {
     area.appendChild(document.createElement("div"));
@@ -139,12 +139,11 @@ function renderCalendar() {
 
     const targetDate = new Date(year, month, d);
     const isPast = targetDate < today;
+    const isAvailable = dayData && dayData.available;
 
-    if (dayData && dayData.available && !isPast) {
-      // 空きありの場合
+    if (isAvailable && !isPast) {
       button.className = "calendar-day available";
 
-      // 残り枠が少ない場合（例: 3名以下）の色分け
       if (dayData.remaining !== undefined && dayData.remaining <= 3) {
         button.className = "calendar-day few";
       }
@@ -168,29 +167,60 @@ function renderCalendar() {
 }
 
 //==================================================
-// 人数更新
+// 人数制御
 //==================================================
-function updatePeople() {
-  document.getElementById("peopleDisplay").textContent = people;
-  document.getElementById("people").value = people;
-  updatePrice();
+function initPeopleControl() {
+  const minusBtn = document.getElementById("minusPeople");
+  const plusBtn = document.getElementById("plusPeople");
+  const display = document.getElementById("peopleDisplay");
+  const hidden = document.getElementById("people");
+
+  minusBtn.addEventListener("click", () => {
+    let num = parseInt(hidden.value) || 1;
+    if (num > 1) {
+      num--;
+      updatePeople(num, display, hidden);
+    }
+  });
+
+  plusBtn.addEventListener("click", () => {
+    let num = parseInt(hidden.value) || 1;
+    if (num < 20) {
+      num++;
+      updatePeople(num, display, hidden);
+    }
+  });
+}
+
+function updatePeople(num, display, hidden) {
+  display.textContent = num;
+  hidden.value = num;
+  calculatePrice();
   saveFormData();
 }
 
 //==================================================
-// 金額表示
+// 料金計算
 //==================================================
-function updatePrice() {
-  const peopleNum = Number(document.getElementById("people").value);
-  const total = peopleNum * unitPrice;
-  document.getElementById("totalPrice").textContent = `${total.toLocaleString()}円`;
+function calculatePrice() {
+  const people = parseInt(document.getElementById("people").value) || 0;
+  const priceEl = document.getElementById("totalPrice");
+
+  if (people === 0) {
+    priceEl.textContent = "人数を選択してください";
+    return;
+  }
+
+  const pricePerPerson = 2500;
+  const total = people * pricePerPerson;
+  priceEl.textContent = `¥${total.toLocaleString()}（${people}名）`;
 }
 
 //==================================================
 // フォーム自動保存・復元
 //==================================================
 function attachFormListeners() {
-  const ids = ["company", "name", "phone", "mail", "memo", "people"];
+  const ids = ["company", "name", "phone", "mail", "memo", "people", "useDate"];
   ids.forEach(id => {
     const el = document.getElementById(id);
     if (el) {
@@ -225,16 +255,13 @@ function restoreFormData() {
     if (data.mail) document.getElementById("mail").value = data.mail;
     if (data.memo) document.getElementById("memo").value = data.memo;
     if (data.people) {
-      people = parseInt(data.people);
-      document.getElementById("people").value = people;
-      document.getElementById("peopleDisplay").textContent = people;
+      document.getElementById("people").value = data.people;
+      document.getElementById("peopleDisplay").textContent = data.people;
     }
     if (data.useDate) {
-      selectedDate = data.useDate;
       document.getElementById("useDate").value = data.useDate;
       document.getElementById("selectedDateText").textContent = `利用日：${data.useDate}`;
     }
-    updatePrice();
   } catch (e) {
     console.error("フォーム復元エラー", e);
   }
@@ -247,16 +274,16 @@ async function sendReservation() {
   const reserveButton = document.getElementById("reserveButton");
   if (reserveButton.disabled) return;
 
-  if (!selectedDate) {
+  const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const date = document.getElementById("useDate").value;
+
+  if (!date) {
     alert("利用日を選択してください");
     return;
   }
-  if (!document.getElementById("name").value.trim()) {
-    alert("お名前を入力してください");
-    return;
-  }
-  if (!document.getElementById("phone").value.trim()) {
-    alert("電話番号を入力してください");
+  if (!name || !phone) {
+    alert("お名前と電話番号は必須です");
     return;
   }
 
@@ -264,10 +291,10 @@ async function sendReservation() {
 
   try {
     const body = {
-      useDate: selectedDate,
+      useDate: date,
       company: document.getElementById("company").value,
-      name: document.getElementById("name").value.trim(),
-      phone: document.getElementById("phone").value.trim(),
+      name: name,
+      phone: phone,
       mail: document.getElementById("mail").value,
       people: Number(document.getElementById("people").value),
       memo: document.getElementById("memo").value
@@ -286,12 +313,11 @@ async function sendReservation() {
     if (data.success) {
       localStorage.setItem("reservationResult", JSON.stringify({
         reservationNo: data.reservationNo,
-        useDate: selectedDate,
+        useDate: date,
         people: body.people,
         totalPrice: data.totalPrice
       }));
 
-      // 入力内容をクリア
       localStorage.removeItem("reservationFormData");
       location.href = "reservation-complete.html";
     } else {
@@ -303,30 +329,4 @@ async function sendReservation() {
   } finally {
     reserveButton.disabled = false;
   }
-}
-
-//==================================================
-// URLから日付を自動選択
-//==================================================
-function autoSelectDateFromUrl() {
-  const params = new URLSearchParams(window.location.search);
-  const dateParam = params.get("date");
-
-  if (!dateParam) return;
-
-  // カレンダーの描画を待ってから選択
-  setTimeout(() => {
-    const buttons = document.querySelectorAll(".calendar-day.available, .calendar-day.few");
-
-    buttons.forEach(btn => {
-      // 日付が一致するボタンを探す
-      const day = parseInt(btn.textContent, 10);
-      const selectedDate = new Date(dateParam);
-      const targetDay = selectedDate.getDate();
-
-      if (day === targetDay) {
-        btn.click(); // 自動で選択状態にする
-      }
-    });
-  }, 400); // カレンダー描画を待つ
 }

@@ -41,10 +41,23 @@ export default {
       }
 
       //======================================
-      // POSTリクエスト（予約作成）
+      // POSTリクエスト
       //======================================
       if (path === "/api/reservation" && method === "POST") {
-        return gasPost(request, env, "saveReservation");
+        const body = await request.json();
+
+        // 支払い情報更新
+        if (body.action === "updatePaymentStatus") {
+          return gasPostWithBody(env, "updatePaymentStatus", body);
+        }
+
+        // 予約変更
+        if (body.action === "updateReservationDetail") {
+          return gasPostWithBody(env, "updateReservationDetail", body);
+        }
+
+        // 予約作成（デフォルト）
+        return gasPostWithBody(env, "saveReservation", body);
       }
 
       //======================================
@@ -115,7 +128,7 @@ async function gasPost(request, env, action) {
 }
 
 //==================================================
-// GAS POST（シンプルなbody送信用）
+// GAS POST（bodyをそのまま送る用）
 //==================================================
 async function gasPostWithBody(env, action, body) {
   body.action = action;

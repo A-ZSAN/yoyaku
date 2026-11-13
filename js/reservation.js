@@ -20,13 +20,11 @@ maxMonth.setDate(1);
 // 初期処理
 //==================================================
 document.addEventListener("DOMContentLoaded", async () => {
-  await loadPrices();
-  await loadCalendar();
+  await loadPrices();           // 料金取得
+  await loadCalendar();         // カレンダー取得
   restoreFormData();
   attachFormListeners();
-
-  // URLから日付・人数を反映
-  applyUrlParams();
+  applyUrlParams();             // URLパラメータ反映
 
   // 人数ボタン
   document.getElementById("minusPeople").onclick = () => {
@@ -47,6 +45,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 //==================================================
+// 料金取得
+//==================================================
+async function loadPrices() {
+  try {
+    const res = await fetch(API_URL + "/api/prices");
+    if (!res.ok) throw new Error("通信エラー");
+
+    const data = await res.json();
+    if (data.length > 0) {
+      unitPrice = Number(data[0].price);
+    }
+  } catch (error) {
+    console.error("料金取得エラー:", error);
+  }
+}
+
+//==================================================
 // URLパラメータから日付・人数を反映
 //==================================================
 function applyUrlParams() {
@@ -54,7 +69,6 @@ function applyUrlParams() {
   const dateParam = params.get("date");
   const peopleParam = params.get("people");
 
-  // 人数を反映
   if (peopleParam) {
     const num = parseInt(peopleParam);
     if (num >= 1 && num <= 20) {
@@ -65,7 +79,6 @@ function applyUrlParams() {
     }
   }
 
-  // 日付を自動選択（カレンダー描画後に実行）
   if (dateParam) {
     setTimeout(() => {
       selectDateFromCalendar(dateParam);
@@ -208,8 +221,7 @@ function calculatePrice() {
     return;
   }
 
-  const pricePerPerson = 2500;
-  const total = peopleNum * pricePerPerson;
+  const total = peopleNum * unitPrice;
   priceEl.textContent = `¥${total.toLocaleString()}（${peopleNum}名）`;
 }
 
